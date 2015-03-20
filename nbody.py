@@ -59,7 +59,6 @@ BODIES = {
 SYSTEM = list(BODIES.values())
 PAIRS = combinations(SYSTEM)
 
-
 def advance(dt, n, bodies=SYSTEM, pairs=PAIRS):
 
     for i in range(n):
@@ -82,19 +81,6 @@ def advance(dt, n, bodies=SYSTEM, pairs=PAIRS):
             r[1] += dt * vy
             r[2] += dt * vz
 
-
-def report_energy(bodies=SYSTEM, pairs=PAIRS, e=0.0):
-
-    for (((x1, y1, z1), v1, m1),
-         ((x2, y2, z2), v2, m2)) in pairs:
-        dx = x1 - x2
-        dy = y1 - y2
-        dz = z1 - z2
-        e -= (m1 * m2) / ((dx * dx + dy * dy + dz * dz) ** 0.5)
-    for (r, [vx, vy, vz], m) in bodies:
-        e += m * (vx * vx + vy * vy + vz * vz) / 2.
-    print("%.9f" % e)
-
 def offset_momentum(ref, bodies=SYSTEM, px=0.0, py=0.0, pz=0.0):
 
     for (r, [vx, vy, vz], m) in bodies:
@@ -106,11 +92,30 @@ def offset_momentum(ref, bodies=SYSTEM, px=0.0, py=0.0, pz=0.0):
     v[1] = py / m
     v[2] = pz / m
 
+def report_energy(bodies=SYSTEM, pairs=PAIRS, e=0.0):
+
+    for (((x1, y1, z1), v1, m1),
+         ((x2, y2, z2), v2, m2)) in pairs:
+        dx = x1 - x2
+        dy = y1 - y2
+        dz = z1 - z2
+        e -= (m1 * m2) / ((dx * dx + dy * dy + dz * dz) ** 0.5)
+    for (r, [vx, vy, vz], m) in bodies:
+        e += m * (vx * vx + vy * vy + vz * vz) / 2.
+    return e
+
+def report_momentum(bodies=SYSTEM, pairs=PAIRS, px=0.0, py=0.0, pz=0.0):
+    for (r, [vx, vy, vz], m) in bodies:
+        px -= m*vx
+        py -= m*vy
+        pz -= m*vz
+    return [px, py, pz]
+
 def main(n, ref='sun'):
     offset_momentum(BODIES[ref])
-    report_energy()
+    print report_energy(), report_momentum()
     advance(0.01, n)
-    report_energy()
+    print report_energy(), report_momentum()
 
 if __name__ == '__main__':
     main(int(sys.argv[1]))
