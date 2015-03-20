@@ -2,16 +2,14 @@ from matplotlib.pyplot import *
 import matplotlib.animation as animation
 from nbody import *
 
-
-nsteps = 500
 ims = []
 
 fig, ax = subplots()
 
 def step(i):
-
+    cla()
     offset_momentum(BODIES['sun'])
-    advance(0.1, nsteps)
+    advance(0.01, 10)
 
     x_list = []
     y_list = []
@@ -25,5 +23,8 @@ def step(i):
     axis([-40, 40, -40, 40])
     return line,
 
-im_ani = animation.FuncAnimation(fig, step, range(20))
-show()
+Writer = animation.writers['ffmpeg']
+writer = Writer(fps=15, bitrate=1800)
+
+im_ani = animation.FuncAnimation(fig, step, range(500))
+im_ani.save('planets.mp4', writer=writer)
