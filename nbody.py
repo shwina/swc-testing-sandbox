@@ -67,12 +67,12 @@ def advance(dt, n, bodies=SYSTEM, pairs=PAIRS):
             dx = x1 - x2
             dy = y1 - y2
             dz = z1 - z2
-            mag = dt * ((dx * dx + dy * dy + dz * dz) ** (-1.5))
+            mag = dt * ((dx * dx + dy * dy + dz * dz) ** (-0.5))
             b1m = m1 * mag
             b2m = m2 * mag
-            v1[0] -= dx * b2m
-            v1[1] -= dy * b2m
-            v1[2] -= dz * b2m
+            v1[0] += dx * b2m
+            v1[1] += dy * b2m
+            v1[2] += dz * b2m
             v2[0] += dx * b1m
             v2[1] += dy * b1m
             v2[2] += dz * b1m
